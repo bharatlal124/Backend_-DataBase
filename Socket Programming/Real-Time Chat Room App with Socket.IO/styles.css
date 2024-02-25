@@ -1,0 +1,48 @@
+#login-container{
+    margin: 15px;
+    padding: 15px;
+    /* border: 1px solid black; */
+    border-radius: 5px;
+    max-width: 180px;
+
+}
+
+#username-input, #room-input, #message-input{
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    width: 90%;
+}
+
+#start-chatting, button{
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid black;
+    background-color: rgb(125, 187, 206);
+    border-radius: 5px;
+    color:black;
+    font-weight: bold;
+    
+}
+
+#message-display{
+    margin: 10px;
+    padding: 5px;
+    padding-bottom: 15px;
+    
+}
+
+#chat-container{
+    border: 1px solid black;
+    border-top: white;
+    margin: 10px;
+    padding: 5px;
+    width: 50%;
+
+}
+
+#message-form{
+    margin: 10px;
+    padding: 5px;
+}
