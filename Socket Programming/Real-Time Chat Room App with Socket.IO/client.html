@@ -1,0 +1,80 @@
+<!-- No need to change the pre-written code.
+Implement the features inside the script tag -->
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Chat-Room App</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <div id="login-container">
+            <!-- form to enter username and room ID -->
+            <form id="login-form">
+                <input type="text" id="username-input"
+                    placeholder="Enter your username" required>
+                <input type="text" id="room-input" placeholder="Enter room ID"
+                    required>
+                <button id='start-chatting' type="submit">Start
+                    Chatting</button>
+            </form>
+        </div>
+
+        <div id="chat-container">
+            <!-- message display area -->
+            <div id="message-display">
+                <!-- Messages will be appended here -->
+            </div>
+
+            <!-- form to send messages -->
+            <form id="message-form">
+                <input type="text" id="message-input"
+                    placeholder="Type your message" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script>
+        const socket = io.connect('http://localhost:3000');
+
+        // ----------------- Write your code here ---------------
+        const loginForm = document.getElementById( 'login-form' );
+        const chatContainer = document.getElementById('chat-container');
+        const messageDisplay = document.getElementById('message-display');
+        const messageForm = document.getElementById('message-form');
+
+        loginForm.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const username = document.getElementById('username-input').value;
+            const room = document.getElementById('room-input').value;
+            
+            socket.emit('login', username, room);
+            loginForm.style.display='none';
+            chatContainer.style.display='block';
+        });
+
+        messageForm.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            const room = document.getElementById('room-input').value;
+            const username = document.getElementById('username-input').value;
+            socket.emit('sendMessage', message, room, username);
+            messageInput.value = '';
+        });
+
+        socket.on('message', (data)=>{
+            const {username, text} = data;
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `<strong>${username}:</strong> ${text}`;
+            messageDisplay.appendChild(messageElement);
+        });
+
+    </script>
+
+    </body>
+
+</html>
