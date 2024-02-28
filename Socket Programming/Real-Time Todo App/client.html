@@ -1,0 +1,84 @@
+<!-- no need to change the prewritten code.
+complete the script tag code. -->
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Task Management App</title>
+    </head>
+
+    <body>
+        <div id="task-form">
+            <!-- Create a form to add new tasks -->
+            <form id="create-task-form">
+                <input type="text" id="task-text" placeholder="Enter a new task"
+                    required>
+                <button id="create-task" type="submit">Add Task</button>
+            </form>
+        </div>
+
+        <div id="task-list">
+            <!-- Tasks will be displayed here -->
+        </div>
+
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script>
+        const socket = io.connect('http://localhost:3000');
+
+        // -------------------write your code here.--------------------
+        document.getElementById('create-task-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const taskText = document.getElementById('task-text').value.trim(); 
+            console.log("Task text:", taskText); 
+
+            if (taskText) {
+                socket.emit('addTask', taskText); 
+                document.getElementById('task-text').value = ''; 
+            }
+        });
+        socket.on('addTask', function(taskText){
+            const taskList = document.getElementById('task-list');
+            const taskItem = document.createElement('div');
+            taskItem.textContent = taskText;
+            taskList.appendChild(taskItem);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                socket.emit('deleteTask', taskText);
+                taskList.removeChild(taskItem); 
+            });
+            
+            // Create update button
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Update';
+
+            updateButton.addEventListener('click', function() {
+                const newTaskText = prompt('Enter new task:');
+                if (newTaskText) {
+                    socket.emit('updateTask', { oldTaskText: taskText, newTaskText });
+                    taskList.appendChild(newTaskText);
+                }
+            });
+
+            taskItem.appendChild(deleteButton);
+            taskItem.appendChild(updateButton);
+            
+            
+        })
+
+        socket.on('deleteTask', function(taskText){
+            const taskList = document.getElementById('task-list');
+            const tasks = taskList.getElementsByTagName('div');
+            Array.from(tasks).forEach(function (task) {
+                if(task.textContent === taskText) {
+                    taskList.removeChild(task);
+                }
+            })
+        })
+
+    </script>
+    </body>
+
+</html>
